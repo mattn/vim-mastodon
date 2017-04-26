@@ -24,6 +24,13 @@ Currently, work in progress!
 :Mastodon stream
 ```
 
+## Configuration (WIP)
+
+```
+let g:mastodon_host = 'https://mstdn.jp'
+let g:mastodon_access_token = 'XXXXXXX'
+```
+
 ## Requirements
 
 webapi-vim
