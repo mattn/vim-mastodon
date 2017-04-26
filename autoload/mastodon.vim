@@ -13,7 +13,8 @@ let s:URLMATCH = s:URL_PROTOCOL.s:URL_DOMAIN.'\%(/'.s:URL_PATH.'\=\)\='
 let s:URLMATCH_HTTPS = s:URL_PROTOCOL_HTTPS.s:URL_DOMAIN.'\%(/'.s:URL_PATH.'\=\)\='
 let s:URLMATCH_NON_HTTPS = s:URL_PROTOCOL_NON_HTTPS.s:URL_DOMAIN.'\%(/'.s:URL_PATH.'\=\)\='
 
-let s:access_token = get(g:, 'mstdn_access_token')
+let s:host = get(g:, 'mastodon_host')
+let s:access_token = get(g:, 'mastodon_access_token')
 
 function! s:to_text(str)
   let str = a:str
@@ -81,7 +82,7 @@ function! s:append_line(expr, text) abort
 endfunction
 
 function! s:show_timeline(items)
-  let winnum = bufwinnr(bufnr('mstdn://'))
+  let winnum = bufwinnr(bufnr('mastodon://'))
   if winnum != -1
     if winnum != bufwinnr('%')
       exe winnum 'wincmd w'
@@ -90,7 +91,7 @@ function! s:show_timeline(items)
   else
     silent noautocmd rightbelow new
     setlocal noswapfile
-    silent exec 'noautocmd file' 'mstdn://'
+    silent exec 'noautocmd file' 'mastodon://'
   endif
 
   let old_undolevels = &undolevels
@@ -125,14 +126,14 @@ function! s:show_timeline(items)
   highlight default link mastodonBoost Directory
 endfunction
 
-function! mstdn#complete(alead, cline, cpos)
+function! mastodon#complete(alead, cline, cpos)
   if len(split(a:cline, '\s')) > 2
     return []
   endif
   return filter(['toot', 'timeline', 'stream'], 'stridx(v:val, a:alead)>=0')
 endfunction
 
-function! mstdn#call(...)
+function! mastodon#call(...)
   let method = get(a:000, 0, '')
   let args = get(a:000, 1, '')
   if method == 'timeline'
@@ -165,19 +166,19 @@ function! mstdn#call(...)
 	\{
 	\  'url':    'https://mstdn.jp/api/v1/streaming/public/local',
 	\  'header': {'Authorization': 'Bearer ' . s:access_token},
-	\  'out_cb': function('mstdn#add_item'),
+	\  'out_cb': function('mastodon#add_item'),
 	\})
   endif
 endfunction
 
 let s:lastline = ''
-function! mstdn#add_item(data)
+function! mastodon#add_item(data)
   let data = a:data
   if data =~ '^event:'
     let s:lastline = substitute(data, '^event:\s*\(\w\+\)', '\1', '')
   elseif data =~ '^data:' && s:lastline == 'update'
     let data = substitute(data, '^data:\s*', '', '')
     let item = webapi#json#decode(data)
-    call s:append_line('mstdn://', s:format(item))
+    call s:append_line('mastodon://', s:format(item))
   endif
 endfunction
