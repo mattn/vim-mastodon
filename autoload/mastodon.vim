@@ -137,7 +137,7 @@ function! mastodon#call(...)
   let method = get(a:000, 0, '')
   let args = get(a:000, 1, '')
   if method == 'timeline'
-    let res = webapi#http#get('https://mstdn.jp/api/v1/timelines/home',
+    let res = webapi#http#get(printf('https://%s/api/v1/timelines/home', s:host),
 	\{
 	\},
 	\{
@@ -150,7 +150,7 @@ function! mastodon#call(...)
     call s:show_timeline(items)
   elseif method == 'toot'
     let text = a:000[1:]
-    let res = webapi#http#post('https://mstdn.jp/api/v1/statuses',
+    let res = webapi#http#post(printf('https://%s/api/v1/statuses', s:host),
 	\{
 	\  'status': text,
 	\},
@@ -164,7 +164,7 @@ function! mastodon#call(...)
     call s:show_timeline([])
     call webapi#http#stream(
 	\{
-	\  'url':    'https://mstdn.jp/api/v1/streaming/public/local',
+	\  'url':    printf('https://%s/api/v1/streaming/public/local', s:host),
 	\  'header': {'Authorization': 'Bearer ' . s:access_token},
 	\  'out_cb': function('mastodon#add_item'),
 	\})
