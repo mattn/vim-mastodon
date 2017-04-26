@@ -9,7 +9,7 @@ Currently, work in progress!
 ### toot
 
 ```
-:Mastodon toot
+:Mastodon toot Blah!
 ```
 
 ### timeline
