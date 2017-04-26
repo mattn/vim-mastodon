@@ -149,7 +149,7 @@ function! mastodon#call(...)
     let items = webapi#json#decode(res.content)
     call s:show_timeline(items)
   elseif method == 'toot'
-    let text = a:000[1:]
+    let text = join(a:000[1:], " ")
     let res = webapi#http#post(printf('https://%s/api/v1/statuses', s:host),
 	\{
 	\  'status': text,
