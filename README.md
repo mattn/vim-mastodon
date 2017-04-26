@@ -1,4 +1,4 @@
-# vim-mstdn
+# vim-mastodon
 
 Mastdon client for Vim
 
@@ -9,19 +9,19 @@ Currently, work in progress!
 ### toot
 
 ```
-:Mstdn toot
+:Mastodon toot
 ```
 
 ### timeline
 
 ```
-:Mstdn timeline
+:Mastodon timeline
 ```
 
 ### stream
 
 ```
-:Mstdn stream
+:Mastodon stream
 ```
 
 ## Requirements
