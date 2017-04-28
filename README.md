@@ -1,6 +1,6 @@
 # vim-mastodon
 
-Mastdon client for Vim
+Mastodon client for Vim
 
 Currently, work in progress!
 
