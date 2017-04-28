@@ -27,7 +27,7 @@ Currently, work in progress!
 ## Configuration (WIP)
 
 ```
-let g:mastodon_host = 'https://mstdn.jp'
+let g:mastodon_host = 'mstdn.jp'
 let g:mastodon_access_token = 'XXXXXXX'
 ```
 
