@@ -33,7 +33,7 @@ let g:mastodon_access_token = 'XXXXXXX'
 
 ## Requirements
 
-webapi-vim
+[webapi-vim](https://github.com/mattn/webapi-vim)
 
 ## License
 
