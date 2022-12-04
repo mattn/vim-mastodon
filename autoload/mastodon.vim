@@ -138,10 +138,10 @@ function! mastodon#call(...)
   let method = get(a:000, 0, '')
   let args = get(a:000, 1, '')
   if method == 'timeline'
-    let res = webapi#http#get(printf('https://%s/api/v1/timelines/home', host),
-	\{
-	\},
-    \ auth_header)
+    let res = webapi#http#get(
+      \  printf('https://%s/api/v1/timelines/home', host),
+      \  {},
+      \  auth_header)
     if res.status != 200
       return res.message
     endif
@@ -149,32 +149,29 @@ function! mastodon#call(...)
     call s:show_timeline(items)
   elseif method == 'toot'
     let text = join(a:000[1:], " ")
-    let res = webapi#http#post(printf('https://%s/api/v1/statuses', host),
-	\{
-	\  'status': text,
-	\},
-    \ auth_header)
+    let res = webapi#http#post(
+      \  printf('https://%s/api/v1/statuses', host),
+      \  {'status': text},
+      \  auth_header)
     if res.status != 200
       return res.message
     endif
   elseif method == 'toot-buffer'
     let text = join(a:000[1:], "\n")
-    let res = webapi#http#post(printf('https://%s/api/v1/statuses', host),
-	\{
-	\  'status': text,
-	\},
-    \ auth_header)
+    let res = webapi#http#post(
+      \  printf('https://%s/api/v1/statuses', host),
+      \  {'status': text},
+      \  auth_header)
     if res.status != 200
       return res.message
     endif
   elseif method == 'stream'
     call s:show_timeline([])
-    call webapi#http#stream(
-	\{
-	\  'url':    printf('https://%s/api/v1/streaming/public/local', host),
-	\  'header': auth_header,
-	\  'out_cb': function('mastodon#add_item'),
-	\})
+    call webapi#http#stream({
+      \  'url':    printf('https://%s/api/v1/streaming/public/local', host),
+      \  'header': auth_header,
+      \  'out_cb': function('mastodon#add_item'),
+      \})
   endif
 endfunction
 
