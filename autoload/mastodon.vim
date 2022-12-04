@@ -133,6 +133,7 @@ endfunction
 function! mastodon#call(...)
   let host = get(g:, 'mastodon_host')
   let access_token = get(g:, 'mastodon_access_token')
+  let auth_header = {'Authorization': 'Bearer ' . access_token}
 
   let method = get(a:000, 0, '')
   let args = get(a:000, 1, '')
@@ -140,9 +141,7 @@ function! mastodon#call(...)
     let res = webapi#http#get(printf('https://%s/api/v1/timelines/home', host),
 	\{
 	\},
-	\{
-    \ 'Authorization': 'Bearer ' . access_token,
-    \})
+    \ auth_header)
     if res.status != 200
       return res.message
     endif
@@ -154,9 +153,7 @@ function! mastodon#call(...)
 	\{
 	\  'status': text,
 	\},
-	\{
-    \ 'Authorization': 'Bearer ' . access_token,
-    \})
+    \ auth_header)
     if res.status != 200
       return res.message
     endif
@@ -166,9 +163,7 @@ function! mastodon#call(...)
 	\{
 	\  'status': text,
 	\},
-	\{
-    \ 'Authorization': 'Bearer ' . access_token,
-    \})
+    \ auth_header)
     if res.status != 200
       return res.message
     endif
@@ -177,7 +172,7 @@ function! mastodon#call(...)
     call webapi#http#stream(
 	\{
 	\  'url':    printf('https://%s/api/v1/streaming/public/local', host),
-	\  'header': {'Authorization': 'Bearer ' . access_token},
+	\  'header': auth_header,
 	\  'out_cb': function('mastodon#add_item'),
 	\})
   endif
