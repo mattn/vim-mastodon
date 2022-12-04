@@ -13,9 +13,6 @@ let s:URLMATCH = s:URL_PROTOCOL.s:URL_DOMAIN.'\%(/'.s:URL_PATH.'\=\)\='
 let s:URLMATCH_HTTPS = s:URL_PROTOCOL_HTTPS.s:URL_DOMAIN.'\%(/'.s:URL_PATH.'\=\)\='
 let s:URLMATCH_NON_HTTPS = s:URL_PROTOCOL_NON_HTTPS.s:URL_DOMAIN.'\%(/'.s:URL_PATH.'\=\)\='
 
-let s:host = get(g:, 'mastodon_host')
-let s:access_token = get(g:, 'mastodon_access_token')
-
 function! s:to_text(str)
   let str = a:str
   let str = substitute(str, '<br\s*/\?>', "\n", 'g')
@@ -134,14 +131,17 @@ function! mastodon#complete(alead, cline, cpos)
 endfunction
 
 function! mastodon#call(...)
+  let host = get(g:, 'mastodon_host')
+  let access_token = get(g:, 'mastodon_access_token')
+
   let method = get(a:000, 0, '')
   let args = get(a:000, 1, '')
   if method == 'timeline'
-    let res = webapi#http#get(printf('https://%s/api/v1/timelines/home', s:host),
+    let res = webapi#http#get(printf('https://%s/api/v1/timelines/home', host),
 	\{
 	\},
 	\{
-    \ 'Authorization': 'Bearer ' . s:access_token,
+    \ 'Authorization': 'Bearer ' . access_token,
     \})
     if res.status != 200
       return res.message
@@ -150,24 +150,24 @@ function! mastodon#call(...)
     call s:show_timeline(items)
   elseif method == 'toot'
     let text = join(a:000[1:], " ")
-    let res = webapi#http#post(printf('https://%s/api/v1/statuses', s:host),
+    let res = webapi#http#post(printf('https://%s/api/v1/statuses', host),
 	\{
 	\  'status': text,
 	\},
 	\{
-    \ 'Authorization': 'Bearer ' . s:access_token,
+    \ 'Authorization': 'Bearer ' . access_token,
     \})
     if res.status != 200
       return res.message
     endif
   elseif method == 'toot-buffer'
     let text = join(a:000[1:], "\n")
-    let res = webapi#http#post(printf('https://%s/api/v1/statuses', s:host),
+    let res = webapi#http#post(printf('https://%s/api/v1/statuses', host),
 	\{
 	\  'status': text,
 	\},
 	\{
-    \ 'Authorization': 'Bearer ' . s:access_token,
+    \ 'Authorization': 'Bearer ' . access_token,
     \})
     if res.status != 200
       return res.message
@@ -176,8 +176,8 @@ function! mastodon#call(...)
     call s:show_timeline([])
     call webapi#http#stream(
 	\{
-	\  'url':    printf('https://%s/api/v1/streaming/public/local', s:host),
-	\  'header': {'Authorization': 'Bearer ' . s:access_token},
+	\  'url':    printf('https://%s/api/v1/streaming/public/local', host),
+	\  'header': {'Authorization': 'Bearer ' . access_token},
 	\  'out_cb': function('mastodon#add_item'),
 	\})
   endif
